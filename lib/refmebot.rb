@@ -24,18 +24,26 @@ class Refmebot
 
   def process_new_tweets(tweets)
     tweets.each do |tweet|
-    # @client.mentions_timeline.each do |tweet|
-      self.parse tweet
+      parse tweet
     end
   end
 
-# Class methods
-
-  def self.parse(tweet)
+  def parse(tweet)
     handle,key, style = tweet.text.split
-    puts handle
-    puts key
-    puts style
+    compoound_key = key + style
+    msg = find compoound_key                    # get the right reference form the database
+    if msg
+      tweet_back(tweet,msg)
+    else
+      tweet_back(tweet,"Sorry We coulnd't find the reference you're looking for")
+    end
+  end
+
+  def tweet_back(tweet,msg)
+    user_handler = tweet.user.screen_name
+    puts user_handler
+    # post the mesage to the user of the tweet
+    @client.update(user_handler + ' ' + msg) if user_handler
   end
 
   def find(key)

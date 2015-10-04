@@ -29,9 +29,10 @@ class Refmebot
   end
 
   def parse(tweet)
-    handle,key, style = tweet.text.split
-    compoound_key = key + style
+    handle,key,style = tweet.text.split
+    compoound_key = key + " " + style
     msg = find compoound_key                    # get the right reference form the database
+    puts "sending #{msg} to #{handle}"
     if msg
       tweet_back(tweet,msg)
     else
@@ -43,7 +44,7 @@ class Refmebot
     user_handler = tweet.user.screen_name
     puts user_handler
     # post the mesage to the user of the tweet
-    @client.update(user_handler + ' ' + msg) if user_handler
+    @client.update("@#{user_handler} #{msg}") if user_handler
   end
 
   def find(key)
